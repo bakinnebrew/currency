@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Currency</title>
+        <script>
+           document.addEventListener('DOMContentLoaded', function(){
+
+                document.querySelector('form').onsubmit = function() {
+
+                    // set endpoint and your access key
+                        var endpoint = 'latest'
+                        var access_key = '4f05e09401d41f465129468c07caed18';
+
+                    fetch(`https://api.exchangeratesapi.io/v1/${endpoint}?access_key=${access_key}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const currency = document.querySelector('#currency').value.toUpperCase();
+                        const rate = data.rates[currency];
+                        let amount = document.querySelector('#amount').value;
+                        let total_amount = amount * rate;
+                        if (isNaN(total_amount)){
+                            document.querySelector('#result').innerHTML = "INVALID AMOUNT";
+                            return false;
+                        }
+                        if (rate !== undefined){
+                            document.querySelector('#result').innerHTML = `${amount} USD is eqaul to ${total_amount.toFixed(3)} ${currency}.`;
+                        } else {
+                            document.querySelector('#result').innerHTML = "INVALID CURRENCY";
+                        }
+                        
+                    })
+                
+                    .catch(error => {
+                        console.log('Error:', error)
+                    });
+                    return false;
+                }
+
+           });
+        </script>
+    </head>
+    <body>
+        <h1>USD Currency Exchange</h1>
+        <form>
+            <input id="amount" placeholder = "1.00 USD" type="text">
+            <input id="currency" placeholder="Currency" type="text">
+            <input type = "submit" value="Convert">
+        </form>
+        <div id="result">
+
+        </div>
+    </body>
+</html>
